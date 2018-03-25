@@ -1,12 +1,15 @@
 package com.orangesunshine.qrcodeapplication;
 
 import android.Manifest;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
@@ -20,11 +23,13 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 public class QrCodeActivity extends AppCompatActivity {
     private final int CODE_REQUEST_CAMERA = 0x0010;
+    private final long INTERAL_SCAN_QRCODE = 1000L;
     //views
     private SurfaceView svCamera;
     private TextView tvResult;
@@ -32,12 +37,19 @@ public class QrCodeActivity extends AppCompatActivity {
     //vars
     private BarcodeDetector mBarcodeDetector;
     private CameraSource mCameraSource;
+    private Vibrator mVibrator;
+    private DetectorProcessor mDetectorProcessor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_code);
+        mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         findViews();
+        initQrcode();
+    }
+
+    private void initQrcode() {
         mBarcodeDetector = new BarcodeDetector.Builder(this)
                 .setBarcodeFormats(Barcode.QR_CODE)
                 .build();
@@ -84,30 +96,27 @@ public class QrCodeActivity extends AppCompatActivity {
             }
         });
 
-        mBarcodeDetector.setProcessor(new Detector.Processor<Barcode>() {
-            @Override
-            public void release() {
-            }
+        mDetectorProcessor = new DetectorProcessor(this);
+        mBarcodeDetector.setProcessor(mDetectorProcessor);
+    }
 
-            @Override
-            public void receiveDetections(Detector.Detections<Barcode> detections) {
-
-                final SparseArray<Barcode> barcodes = detections.getDetectedItems();
-
-                if (barcodes.size() != 0) {
-                    // 因为receiveDetections在非UI线程中执行
-                    tvResult.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            tvResult.setText(
-                                    barcodes.valueAt(0).displayValue
-                            );
-                        }
-                    });
+    protected void onDetector(final String result) {
+        if (!TextUtils.isEmpty(result)) {
+            mDetectorProcessor.pause = true;
+            mVibrator.vibrate(200L);
+            tvResult.post(new Runnable() {
+                @Override
+                public void run() {
+                    tvResult.setText(result);
                 }
-
+            });
+            try {
+                Thread.sleep(INTERAL_SCAN_QRCODE);
+                mDetectorProcessor.pause = false;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        });
+        }
     }
 
     @Override
@@ -127,5 +136,35 @@ public class QrCodeActivity extends AppCompatActivity {
     private void findViews() {
         svCamera = findViewById(R.id.camera_view);
         tvResult = findViewById(R.id.code_info);
+    }
+
+    public static class DetectorProcessor implements Detector.Processor<Barcode> {
+        private WeakReference<QrCodeActivity> mReference;
+        private boolean pause;
+
+        public DetectorProcessor(QrCodeActivity activity) {
+            mReference = new WeakReference<QrCodeActivity>(activity);
+        }
+
+
+        @Override
+        public void release() {
+
+        }
+
+        @Override
+        public void receiveDetections(Detector.Detections<Barcode> detections) {
+            if (pause || null == mReference) return;
+            QrCodeActivity qrCodeActivity = mReference.get();
+            if (null == qrCodeActivity || qrCodeActivity.isFinishing()) return;
+            final SparseArray<Barcode> barcodes = detections.getDetectedItems();
+
+            if (barcodes.size() != 0) {
+                // 因为receiveDetections在非UI线程中执行
+                qrCodeActivity.onDetector(barcodes.valueAt(0).displayValue);
+            }
+
+
+        }
     }
 }
