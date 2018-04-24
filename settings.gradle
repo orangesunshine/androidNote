@@ -1,1 +1,1 @@
-include ':qrcode'/*,':app', ":baidulbs"*/
+include  ':app', ":baidulbs"/*':qrcode'*/
