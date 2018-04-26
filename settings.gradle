@@ -1,1 +1,2 @@
-include  ':app', ":baidulbs"/*':qrcode'*/
+include ':eventbus', ':hyutils'
+/*, ':app', ':baidulbs', ':qrcode'*/

@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/baidulbs/baidulbs.iml" filepath="$PROJECT_DIR$/baidulbs/baidulbs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/eventbus/eventbus.iml" filepath="$PROJECT_DIR$/eventbus/eventbus.iml" />
       <module fileurl="file://$PROJECT_DIR$/hynoteb.iml" filepath="$PROJECT_DIR$/hynoteb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/hyutils/hyutils.iml" filepath="$PROJECT_DIR$/hyutils/hyutils.iml" />
     </modules>
   </component>
 </project>
