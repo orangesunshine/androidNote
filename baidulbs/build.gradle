@@ -1,4 +1,4 @@
-apply plugin: 'com.android.library'
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
@@ -15,9 +15,9 @@ android {
 
     }
 
-    sourceSets{
+    sourceSets {
         main {
-            jniLibs.srcDirs = ['src/main/jniLibs']//设置目标的so存放路径
+            jniLibs.srcDirs = ['libs']
         }
     }
 
@@ -37,4 +37,5 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    compile files('libs/baidumapapi_map_v4_3_1.jar')
 }

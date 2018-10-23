@@ -2,9 +2,21 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/androidcodeutil/androidcodeutil.iml" filepath="$PROJECT_DIR$/androidcodeutil/androidcodeutil.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baidulbs/baidulbs.iml" filepath="$PROJECT_DIR$/baidulbs/baidulbs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baidulocdemo/baidulocdemo.iml" filepath="$PROJECT_DIR$/baidulocdemo/baidulocdemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baidumapapi/baidumapapi.iml" filepath="$PROJECT_DIR$/baidumapapi/baidumapapi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baidumapsdk/baidumapsdk.iml" filepath="$PROJECT_DIR$/baidumapsdk/baidumapsdk.iml" />
       <module fileurl="file://$PROJECT_DIR$/eventbus/eventbus.iml" filepath="$PROJECT_DIR$/eventbus/eventbus.iml" />
       <module fileurl="file://$PROJECT_DIR$/hynoteb.iml" filepath="$PROJECT_DIR$/hynoteb.iml" />
       <module fileurl="file://$PROJECT_DIR$/hyutils/hyutils.iml" filepath="$PROJECT_DIR$/hyutils/hyutils.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jobservice/jobservice.iml" filepath="$PROJECT_DIR$/jobservice/jobservice.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jpush/jpush.iml" filepath="$PROJECT_DIR$/jpush/jpush.iml" />
+      <module fileurl="file://$PROJECT_DIR$/js/js.iml" filepath="$PROJECT_DIR$/js/js.iml" />
+      <module fileurl="file://$PROJECT_DIR$/rxjava2retrofit2/rxjava2retrofit2.iml" filepath="$PROJECT_DIR$/rxjava2retrofit2/rxjava2retrofit2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tcpclient/tcpclient.iml" filepath="$PROJECT_DIR$/tcpclient/tcpclient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tcpserver/tcpserver.iml" filepath="$PROJECT_DIR$/tcpserver/tcpserver.iml" />
+      <module fileurl="file://$PROJECT_DIR$/test/test.iml" filepath="$PROJECT_DIR$/test/test.iml" />
     </modules>
   </component>
 </project>
