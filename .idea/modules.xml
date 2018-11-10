@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/androidcodeutil/androidcodeutil.iml" filepath="$PROJECT_DIR$/androidcodeutil/androidcodeutil.iml" />
+      <module fileurl="file://$PROJECT_DIR$/androidtaska/androidtaska.iml" filepath="$PROJECT_DIR$/androidtaska/androidtaska.iml" />
+      <module fileurl="file://$PROJECT_DIR$/androidtaskb/androidtaskb.iml" filepath="$PROJECT_DIR$/androidtaskb/androidtaskb.iml" />
       <module fileurl="file://$PROJECT_DIR$/baidulbs/baidulbs.iml" filepath="$PROJECT_DIR$/baidulbs/baidulbs.iml" />
       <module fileurl="file://$PROJECT_DIR$/baidulocdemo/baidulocdemo.iml" filepath="$PROJECT_DIR$/baidulocdemo/baidulocdemo.iml" />
       <module fileurl="file://$PROJECT_DIR$/baidumapapi/baidumapapi.iml" filepath="$PROJECT_DIR$/baidumapapi/baidumapapi.iml" />
