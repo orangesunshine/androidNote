@@ -1,2 +1,2 @@
 //include ':eventbus', ':hyutils'
-include ':baidulbs', ':baidulocdemo', ':baidumapapi', ':baidumapsdk', ':eventbus', ':hyutils', ':jobservice', ':tcpclient', ':tcpserver', ':rxjava2retrofit2', ':jpush', ':test', ':androidcodeutil', ':js'/*, ':app', ':baidulbs', ':qrcode'*/
+include ':baidulbs', ':baidulocdemo', ':baidumapapi', ':baidumapsdk', ':eventbus', ':hyutils', ':jobservice', ':tcpclient', ':tcpserver', ':rxjava2retrofit2', ':jpush', ':test', ':androidcodeutil', ':js', ':pullloadmore', ':pullloadmorelib'/*, ':app', ':baidulbs', ':qrcode'*/
