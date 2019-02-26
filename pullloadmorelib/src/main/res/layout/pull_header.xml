@@ -1,35 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#33000000">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:id="@+id/ll_header_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="horizontal">
+    <FrameLayout
+        android:id="@+id/fl_header_container"
+        android:background="#33000000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:id="@+id/rl_header_content"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="center|bottom">
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_gravity="center"
-                android:id="@+id/iv_progressbar"
+            <TextView
+                android:layout_centerInParent="true"
+                android:id="@+id/tv_hint"
+                android:textSize="16sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/bga_refresh_loding" />
-        </FrameLayout>
+                android:text="下拉刷新"
+                android:textColor="#ffffff" />
 
-        <TextView
-            android:id="@+id/tv_hint"
-            android:textSize="16sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="正在加载……"
-            android:textColor="#ffffff" />
-    </LinearLayout>
+            <FrameLayout
+                android:layout_alignLeft="@id/tv_hint"
+                android:layout_marginLeft="-50dp"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_gravity="center"
+                    android:id="@+id/iv_progressbar"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/bga_refresh_loding" />
+
+                <ImageView
+                    android:id="@+id/iv_arrow"
+                    android:src="@drawable/xlistview_arrow"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </FrameLayout>
+        </RelativeLayout>
+    </FrameLayout>
 </FrameLayout>
