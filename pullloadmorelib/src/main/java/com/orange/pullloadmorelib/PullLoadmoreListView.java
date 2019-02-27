@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
@@ -27,23 +28,26 @@ public class PullLoadmoreListView extends ListView {
     private final float RADIO = 2.0f;
     private final int ROTATE_ANIM_DURATION = 200;
     private final int SCROLL_DURATION = 500;
+    private final int PULL_OFFSET = 100;
 
     //vars
     private Context mContext;
     private int mDefaultHeaderHeight;
     private int mState;
+    private boolean isPullUp;
+    private View mFooter;
     private FrameLayout mHeader,mContainerFl;
     private RelativeLayout rlHeaderContent;
-    private ImageView ivProgressBar, ivArrow;
+    private ImageView ivProgressBar,ivFooterProgressBar, ivArrow;
     private TextView mHeaderTv;
     private Animation mRotateUp,mRotateDown;
-    private AnimationDrawable mProgressDrawable;
+    private AnimationDrawable mProgressDrawable,mFooterProgressDrawable;
     private Scroller mScroller;
-    private RefreshListener mRefreshListener;
+    private RefreshLoadmoreListener mRefreshLoadmoreListener;
 
-    public void setRefreshListener(RefreshListener refreshListener)
+    public void setRefreshListener(RefreshLoadmoreListener refreshListener)
     {
-        mRefreshListener = refreshListener;
+        mRefreshLoadmoreListener = refreshListener;
     }
 
     public PullLoadmoreListView(Context context) {
@@ -61,18 +65,34 @@ public class PullLoadmoreListView extends ListView {
 
     private void init(Context context) {
         mContext = context;
+        isPullUp = false;
         mState = PULL_NOMAL;
         mScroller = new Scroller(context, new DecelerateInterpolator());
+        //header
         mHeader = (FrameLayout) LayoutInflater.from(context).inflate(R.layout.pull_header, null);
         mContainerFl = mHeader.findViewById(R.id.fl_header_container);
         rlHeaderContent = mHeader.findViewById(R.id.rl_header_content);
         ivProgressBar = mHeader.findViewById(R.id.iv_progressbar);
         ivArrow = mHeader.findViewById(R.id.iv_arrow);
         mHeaderTv = mHeader.findViewById(R.id.tv_hint);
-
         mContainerFl.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0));
         addHeaderView(mHeader);
         setHeaderDividersEnabled(false);
+        mHeader.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @SuppressLint("NewApi")
+            @Override
+            public void onGlobalLayout() {
+                mDefaultHeaderHeight = rlHeaderContent.getHeight();
+                getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+
+        //footer
+        mFooter = LayoutInflater.from(context).inflate(R.layout.pull_footer,null);
+        ivFooterProgressBar = mFooter.findViewById(R.id.iv_footer_progressbar);
+        mFooterProgressDrawable = (AnimationDrawable) ivFooterProgressBar.getDrawable();
+        addFooterView(mFooter);
+        mFooter.setVisibility(GONE);
 
         mProgressDrawable = (AnimationDrawable) ivProgressBar.getDrawable();
         mRotateUp = new RotateAnimation(0.0f, -180.0f, Animation.RELATIVE_TO_SELF, 0.5f,
@@ -83,15 +103,6 @@ public class PullLoadmoreListView extends ListView {
                 Animation.RELATIVE_TO_SELF, 0.5f);
         mRotateDown.setDuration(ROTATE_ANIM_DURATION);
         mRotateDown.setFillAfter(true);
-
-        mHeader.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @SuppressLint("NewApi")
-            @Override
-            public void onGlobalLayout() {
-                mDefaultHeaderHeight = rlHeaderContent.getHeight();
-                getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-        });
     }
 
     private float mPreY;
@@ -112,7 +123,16 @@ public class PullLoadmoreListView extends ListView {
                 updateHeader(deltY);
                 break;
             case MotionEvent.ACTION_UP:
+                mPreY =ev.getRawY();
                 onActionUp(mState);
+                if (canLoadmore()) {
+                    isPullUp = true;
+                    mFooter.setVisibility(VISIBLE);
+                    mFooterProgressDrawable.start();
+                    if (null != mRefreshLoadmoreListener) {
+                        mRefreshLoadmoreListener.onLoadmore();
+                    }
+                }
                 break;
         }
 
@@ -156,10 +176,10 @@ public class PullLoadmoreListView extends ListView {
         if (PULL_REFRESHING == state) {
             ivProgressBar.setVisibility(VISIBLE);
             ivArrow.setVisibility(GONE);
-            mHeaderTv.setText("正在加载……");
+            mHeaderTv.setText("正在刷新……");
             mProgressDrawable.start();
-            if (null != mRefreshListener) {
-                mRefreshListener.onRefresh();
+            if (null != mRefreshLoadmoreListener) {
+                mRefreshLoadmoreListener.onRefresh();
             }
         }else{
             mProgressDrawable.stop();
@@ -180,6 +200,25 @@ public class PullLoadmoreListView extends ListView {
         mState=state;
     }
 
+    private boolean canLoadmore()
+    {
+        return isBottom() && !isPullUp && isPullUp();
+    }
+
+    private boolean isBottom()
+    {
+        if (getCount() > 0) {
+            Log.e("HY","getBottom: "+getChildAt(getChildCount()-1).getBottom() + ", getHeight: "+getHeight());
+            return getLastVisiblePosition() == getAdapter().getCount() - 1;
+        }
+        return false;
+    }
+
+    private boolean isPullUp()
+    {
+        return (mDownY-mPreY)>PULL_OFFSET;
+    }
+
     @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
@@ -193,12 +232,24 @@ public class PullLoadmoreListView extends ListView {
 
     public void refreshComplete()
     {
-        onActionUp(mState);
+        if (PULL_REFRESHING == mState) {
+            onActionUp(mState);
+        }
     }
 
-    public static interface RefreshListener
+    public void loadmoreComplete()
     {
-        public void onRefresh();
+        if (isPullUp) {
+            isPullUp = false;
+            mFooterProgressDrawable.stop();
+            mFooter.setVisibility(GONE);
+        }
+    }
+
+    public interface RefreshLoadmoreListener
+    {
+        void onRefresh();
+        void onLoadmore();
     }
 }
 
